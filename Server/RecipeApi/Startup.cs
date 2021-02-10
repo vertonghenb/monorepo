@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
@@ -13,6 +14,7 @@ using RecipeApi.Data;
 using RecipeApi.Data.Repositories;
 using RecipeApi.Models;
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -99,8 +101,6 @@ namespace RecipeApi
                 c.OperationProcessors.Add(
                     new AspNetCoreOperationSecurityScopeProcessor("JWT")); //adds the token when a request is send
             });
-
-
         }
     
 
@@ -117,6 +117,11 @@ namespace RecipeApi
             // Register the Swagger generator and the Swagger UI middlewares
             app.UseOpenApi();
             app.UseSwaggerUi3();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/dist/recipeapp"))
+            });
 
             app.UseRouting();
 
