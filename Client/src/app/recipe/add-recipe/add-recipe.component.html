@@ -1,0 +1,78 @@
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="recipe" (ngSubmit)="onSubmit()">
+      <mat-form-field>
+        <input
+          matInput
+          aria-label="name"
+          placeholder="name"
+          type="text"
+          formControlName="name"
+          required
+          #spy
+        />
+
+        <mat-error
+          *ngIf="recipe.get('name')['errors'] && recipe.get('name').touched"
+        >
+          {{ getErrorMessage(recipe.get('name')['errors']) }}
+        </mat-error>
+      </mat-form-field>
+      <div
+        formArrayName="ingredients"
+        *ngFor="
+          let item of recipe.get('ingredients')['controls'];
+          let i = index
+        "
+      >
+        <div [formGroupName]="i">
+          <mat-form-field>
+            <input
+              matInput
+              type="text"
+              aria-label="ingredient amount"
+              placeholder="amount"
+              formControlName="amount"
+            />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-select
+              placeholder="unit"
+              aria-label="ingredient unit"
+              formControlName="unit"
+            >
+              <mat-option *ngFor="let type of unitTypes" [value]="type">
+                {{ type }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="name"
+              aria-label="ingredient name"
+              type="text"
+              formControlName="name"
+            />
+          </mat-form-field>
+        </div>
+        <mat-error *ngIf="item.errors && item.get('name').touched">
+          {{ getErrorMessage(item.errors) }}
+        </mat-error>
+      </div>
+      <button mat-raised-button type="submit" [disabled]="!recipe.valid">
+        add recipe
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>
+<mat-card class="error" *ngIf="errorMessage" data-cy="appError">
+  got an error while adding the recipe: {{ errorMessage }}
+</mat-card>
+<mat-card
+  class="confirmation"
+  *ngIf="confirmationMessage"
+  data-cy="appConfirmation"
+>
+  {{ confirmationMessage }}
+</mat-card>
