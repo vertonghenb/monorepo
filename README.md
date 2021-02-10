@@ -41,7 +41,7 @@ dotnet watch run
 ```
 cd Client
 npm install
-ng build
+ng build --prod
 ```
 
 ### Server
