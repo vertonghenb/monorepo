@@ -34,7 +34,7 @@ namespace RecipeApi
         {
             services.AddControllers();
             services.AddDbContext<RecipeContext>(options =>
-          options.UseSqlServer(Configuration.GetConnectionString("RecipeContext")));
+            options.UseSqlite(Configuration.GetConnectionString("RecipeContext")));
 
             services.AddScoped<RecipeDataInitializer>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();
@@ -101,8 +101,19 @@ namespace RecipeApi
                 c.OperationProcessors.Add(
                     new AspNetCoreOperationSecurityScopeProcessor("JWT")); //adds the token when a request is send
             });
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://happy-sea-08deb9f03.azurestaticapps.net")
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
+                    });
+            });
         }
-    
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RecipeDataInitializer recipeDataInitializer)
@@ -124,9 +135,9 @@ namespace RecipeApi
             });
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
