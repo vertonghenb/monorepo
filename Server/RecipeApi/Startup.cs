@@ -34,7 +34,7 @@ namespace RecipeApi
         {
             services.AddControllers();
             services.AddDbContext<RecipeContext>(options =>
-          options.UseSqlServer(Configuration.GetConnectionString("RecipeContext")));
+                options.UseSqlite(Configuration.GetConnectionString("RecipeContext")));
 
             services.AddScoped<RecipeDataInitializer>();
             services.AddScoped<IRecipeRepository, RecipeRepository>();
